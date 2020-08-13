@@ -1,8 +1,8 @@
 name: harry_potter_collection
-description: A new Flutter package project.
-version: 0.0.1
-author:
-homepage:
+description: A flutter package built to access potterapi.com APIs.
+version: 1.0.0
+author: Fred Adewole (fredadewole@gmail.com)
+homepage: https://github.com/freddominant/harry_potter_collection
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
