@@ -52,7 +52,7 @@ class HarryPotterClient {
       switch (response.statusCode) {
         case 200: {
           var result = CharacterResponse.fromJson(jsonDecode(response.body));
-        return result.characters;
+          return result.characters;
         }
         case 401:
           throw Exception(response.body.toString());
@@ -76,15 +76,16 @@ class HarryPotterClient {
     }
   }
 
-  Future<HousesResponse> fetchAllHousesAsFuture() async {
+  Future<List<House>> fetchAllHousesAsFuture() async {
     final url =
         "${Constants.BASE_URL}${Constants.HOUSE}?key=${this._apiKey}";
 
     try {
       final response = await http.get(url);
       switch (response.statusCode) {
-        case 200:
-          return HousesResponse.fromJson(jsonDecode(response.body));
+        case 200: {
+          return HousesResponse.fromJson(jsonDecode(response.body)).houses;
+        }
         case 401:
           throw Exception(response.body.toString());
         default:
@@ -98,10 +99,9 @@ class HarryPotterClient {
   Future<House> fetchHouseByIdAsFuture(String id) async {
     final url =
         "${Constants.BASE_URL}${Constants.HOUSE}/$id?key=${this._apiKey}";
-
     try {
       final response = await http.get(url);
-      return House.fromJson(jsonDecode(response.body));
+      return House.fromList(jsonDecode(response.body));
     } on SocketException {
       throw ("No Internet Connection.");
     }
