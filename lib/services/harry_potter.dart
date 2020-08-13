@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:harry_potter_collection/models/all_spells_response.dart';
 import 'package:harry_potter_collection/models/house.dart';
+import 'package:harry_potter_collection/models/spell.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:harry_potter_collection/models/all_houses_response.dart';
@@ -107,7 +108,7 @@ class HarryPotterClient {
     }
   }
 
-  Future<SpellResponse> fetchAllSpellsAsFuture() async {
+  Future<List<Spell>> fetchAllSpellsAsFuture() async {
     final url =
         "${Constants.BASE_URL}${Constants.SPELL}?key=${this._apiKey}";
 
@@ -115,7 +116,7 @@ class HarryPotterClient {
       final response = await http.get(url);
       switch (response.statusCode) {
         case 200:
-          return SpellResponse.fromJson(jsonDecode(response.body));
+          return SpellResponse.fromJson(jsonDecode(response.body)).spells;
         case 401:
           throw Exception(response.body.toString());
         default:

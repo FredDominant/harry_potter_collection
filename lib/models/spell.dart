@@ -13,4 +13,9 @@ class Spell {
         type: json["type"],
         effect: json["effect"]);
   }
+
+  @override
+  String toString() {
+    return "spell: $spell, type: $type, effect: $effect";
+  }
 }
