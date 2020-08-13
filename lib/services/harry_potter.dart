@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:harry_potter_collection/models/all_spells_response.dart';
 import 'package:harry_potter_collection/models/house.dart';
+import 'package:harry_potter_collection/models/spell.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:harry_potter_collection/models/all_houses_response.dart';
@@ -14,7 +15,7 @@ class HarryPotterClient {
 
   HarryPotterClient(this._apiKey);
 
-  Future<List<Character>> fetchAllCharactersAsFuture(
+  Future<List<dynamic>> fetchAllCharactersAsFuture(
       {String name,
       String house,
       String patronus,
@@ -31,8 +32,8 @@ class HarryPotterClient {
       String boggart,
       String animagus}) async {
     final url = "${Constants.BASE_URL}" +
-        "/${Constants.CHARACTERS_URL}" +
-        "?apikey=${this._apiKey}" +
+        "${Constants.CHARACTERS_URL}" +
+        "?key=${this._apiKey}" +
         "${name != null && name.isNotEmpty ? "?name=$name" : ""}" +
         "${patronus != null && patronus.isNotEmpty ? "?patronus=$patronus" : ""}" +
         "${species != null && species.isNotEmpty ? "?species=$species" : ""}" +
@@ -50,9 +51,10 @@ class HarryPotterClient {
     try {
       final response = await http.get(url);
       switch (response.statusCode) {
-        case 200:
+        case 200: {
           var result = CharacterResponse.fromJson(jsonDecode(response.body));
           return result.characters;
+        }
         case 401:
           throw Exception(response.body.toString());
         default:
@@ -65,7 +67,7 @@ class HarryPotterClient {
 
   Future<Character> fetchCharacterByIdAsFuture(String id) async {
     final url =
-        "${Constants.BASE_URL}/${Constants.CHARACTERS_URL}/$id?apikey=${this._apiKey}";
+        "${Constants.BASE_URL}${Constants.CHARACTERS_URL}/$id?key=${this._apiKey}";
 
     try {
       final response = await http.get(url);
@@ -75,15 +77,16 @@ class HarryPotterClient {
     }
   }
 
-  Future<HousesResponse> fetchAllHousesAsFuture() async {
+  Future<List<House>> fetchAllHousesAsFuture() async {
     final url =
-        "${Constants.BASE_URL}/${Constants.HOUSE}?apikey=${this._apiKey}";
+        "${Constants.BASE_URL}${Constants.HOUSE}?key=${this._apiKey}";
 
     try {
       final response = await http.get(url);
       switch (response.statusCode) {
-        case 200:
-          return HousesResponse.fromJson(jsonDecode(response.body));
+        case 200: {
+          return HousesResponse.fromJson(jsonDecode(response.body)).houses;
+        }
         case 401:
           throw Exception(response.body.toString());
         default:
@@ -96,25 +99,24 @@ class HarryPotterClient {
 
   Future<House> fetchHouseByIdAsFuture(String id) async {
     final url =
-        "${Constants.BASE_URL}/${Constants.HOUSE}/$id?apikey=${this._apiKey}";
-
+        "${Constants.BASE_URL}${Constants.HOUSE}/$id?key=${this._apiKey}";
     try {
       final response = await http.get(url);
-      return House.fromJson(jsonDecode(response.body));
+      return House.fromList(jsonDecode(response.body));
     } on SocketException {
       throw ("No Internet Connection.");
     }
   }
 
-  Future<SpellResponse> fetchAllSpellsAsFuture() async {
+  Future<List<Spell>> fetchAllSpellsAsFuture() async {
     final url =
-        "${Constants.BASE_URL}/${Constants.SPELL}?apikey=${this._apiKey}";
+        "${Constants.BASE_URL}${Constants.SPELL}?key=${this._apiKey}";
 
     try {
       final response = await http.get(url);
       switch (response.statusCode) {
         case 200:
-          return SpellResponse.fromJson(jsonDecode(response.body));
+          return SpellResponse.fromJson(jsonDecode(response.body)).spells;
         case 401:
           throw Exception(response.body.toString());
         default:

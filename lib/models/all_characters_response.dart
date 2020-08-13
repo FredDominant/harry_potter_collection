@@ -1,21 +1,14 @@
 import 'package:harry_potter_collection/models/character.dart';
 
 class CharacterResponse {
-  final List<Character> characters;
+  final List<dynamic> characters;
 
   CharacterResponse({this.characters});
 
-  factory CharacterResponse.fromJson(List<Character> characters) {
+  factory CharacterResponse.fromJson(List<dynamic> characters) {
+    var result = characters.map((e) => Character.fromJson(e));
     return CharacterResponse(
         characters:
-            characters != null ? List<Character>.from(characters) : null);
-  }
-
-  List<dynamic> toJson() {
-    List<dynamic> data = new List<Character>();
-    if (this.characters != null) {
-      data = this.characters;
-    }
-    return data;
+            result != null ? List<Character>.from(result) : null);
   }
 }
